@@ -252,7 +252,6 @@ var materials = [
     }, true
   ); //*/
 
-}
 
 window.onload = function() {
     if(getUa() === false) init();
