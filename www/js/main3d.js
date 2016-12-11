@@ -254,6 +254,23 @@ var materials = [
 
 }
 
+window.addEventListener("keydown", function(e) {
+    e.preventDefault();
+    moveFlg = true;
+    }, true
+  );
+
+  window.addEventListener("keyup", function(e) {
+    e.preventDefault();
+    moveFlg = false;
+    }, true
+  ); //*/
+
+}
+
+
+
+
 window.onload = function() {
     if(getUa() === false) init();
     else document.addEventListener("deviceready", init, false);
