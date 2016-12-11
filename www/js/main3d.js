@@ -252,9 +252,6 @@ var materials = [
     }, true
   ); //*/
 
-
-<<<<<<< HEAD
-=======
   window.addEventListener("keydown", function(e) {
     e.preventDefault();
     moveFlg = true;
@@ -271,8 +268,6 @@ var materials = [
 
 
 
-
->>>>>>> 52f2b8b31251c7d255ce22acfed6d65fc7bc9e4e
 window.onload = function() {
     if(getUa() === false) init();
     else document.addEventListener("deviceready", init, false);
