@@ -253,6 +253,26 @@ var materials = [
   ); //*/
 
 
+<<<<<<< HEAD
+=======
+  window.addEventListener("keydown", function(e) {
+    e.preventDefault();
+    moveFlg = true;
+    }, true
+  );
+
+  window.addEventListener("keyup", function(e) {
+    e.preventDefault();
+    moveFlg = false;
+    }, true
+  ); //*/
+
+}
+
+
+
+
+>>>>>>> 52f2b8b31251c7d255ce22acfed6d65fc7bc9e4e
 window.onload = function() {
     if(getUa() === false) init();
     else document.addEventListener("deviceready", init, false);
