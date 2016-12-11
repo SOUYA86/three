@@ -1,6 +1,6 @@
 (function() {
 
-    //定数
+    //定数 2
     var EYE_NUM = 2;
     
     var EYE_WIDTH = 0.025;
