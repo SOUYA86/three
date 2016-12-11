@@ -2,7 +2,7 @@
 
     //定数
     var EYE_NUM = 2;
-    ;
+    
     var EYE_WIDTH = 0.025;
     var EYE_LENGTH = 0.010;
     
@@ -253,23 +253,6 @@ var materials = [
   ); //*/
 
 }
-
-window.addEventListener("keydown", function(e) {
-    e.preventDefault();
-    moveFlg = true;
-    }, true
-  );
-
-  window.addEventListener("keyup", function(e) {
-    e.preventDefault();
-    moveFlg = false;
-    }, true
-  ); //*/
-
-}
-
-
-
 
 window.onload = function() {
     if(getUa() === false) init();
