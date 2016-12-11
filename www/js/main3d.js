@@ -255,13 +255,13 @@ var materials = [
   window.addEventListener("keydown", function(e) {
     e.preventDefault();
     moveFlg = true;
-    }, true
+    }
   );
 
   window.addEventListener("keyup", function(e) {
     e.preventDefault();
     moveFlg = false;
-    }, true
+    }
   ); //*/
 
 }
