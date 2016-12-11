@@ -1,7 +1,11 @@
 (function() {
 
     //定数
+    var EYE_NUM = 2;
+    ;
     var EYE_WIDTH = 0.025;
+    var EYE_LENGTH = 0.010;
+    
     var Boxsize=20;
     var NUM=20;
     
@@ -23,9 +27,11 @@
     var touchY=0;
     var isMouseDown = false;
     
-    var t=0;
-
     var scene;
+    
+    var fps=30.0;
+
+    var moveFlg = false;
 
 
 
@@ -66,39 +72,91 @@ function init() {
   scene = new THREE.Scene();
   
   var width  = 320;
-  var height = 540/2;
+  var height = 540/EYE_NUM;
   var fov    = 40;
   var aspect = width / height;
-  var near   = 0.1;
+  var near   = 0.001;
   var far    = 10000;
-  var cameraR = new THREE.PerspectiveCamera( fov, aspect, near, far );
-  cameraR.position.set( 0, +EYE_WIDTH, 0 );
-  var cameraL = new THREE.PerspectiveCamera( fov, aspect, near, far );
-  cameraL.position.set( 0, -EYE_WIDTH, 0 );
-  var cameragroup = new THREE.Object3D();
-  cameragroup.add( cameraR );
-  cameragroup.add( cameraL );
-  scene.add( cameragroup );
-  cameragroup.position.z = -Boxsize*VNUM + 1.7;
   
-  cameragroup.rotation.order = "ZXY";
-  cameragroup.rotation.z = 170 / 180.0 * Math.PI;
-  cameragroup.rotation.y = 0 / 180.0 * Math.PI;
-  cameragroup.rotation.x = 90 / 180.0 * Math.PI;
+  
+  
+  if( EYE_NUM == 2) {
+    var cameraR = new THREE.PerspectiveCamera( fov, aspect, near, far );
+    cameraR.position.set( EYE_LENGTH, +EYE_WIDTH, 0 );
+    cameraR.rotation.x =   0.01 / 180.0 * Math.PI;
+    var cameraL = new THREE.PerspectiveCamera( fov, aspect, near, far );
+    cameraL.position.set( EYE_LENGTH, -EYE_WIDTH, 0 );
+    cameraR.rotation.x = - 0.01 / 180.0 * Math.PI;
+    var cameragroup = new THREE.Object3D();
+    cameragroup.add( cameraR );
+    cameragroup.add( cameraL );
+    scene.add( cameragroup );
+    cameragroup.position.z = -Boxsize*VNUM + 1.7;
+    cameragroup.rotation.order = "ZXY";
+  
+    var rendererR = new THREE.WebGLRenderer( {antialias:true} );
+    rendererR.setSize( width, height );
+    rendererR.shadowMapEnabled = true;
+    rendererR.setClearColor(0xa0a0f0, 1.0);
+    document.body.appendChild( rendererR.domElement );
+
+    var rendererL = new THREE.WebGLRenderer( {antialias:true} );
+    rendererL.setSize( width, height );
+    rendererL.shadowMap.enabled = true;
+    rendererL.setClearColor(0xa0a0f0, 1.0);
+    document.body.appendChild( rendererL.domElement );
+
+    ( function renderLoop () {
+      requestAnimationFrame( renderLoop );
+      rendererR.render( scene, cameraR );
+      rendererL.render( scene, cameraL );
+    {
+      if (moveFlg) {
+        var v = new THREE.Vector3(0,0,-0.1);
+        cameragroup.quaternion.multiplyVector3(v);
+        
+        cameragroup.position.x += v.x;
+        cameragroup.position.y += v.y;
+        cameragroup.position.z += v.z;
+        if( cameragroup.position.z < -Boxsize*VNUM + 1.7) {
+          cameragroup.position.z = -Boxsize*VNUM + 1.7;
+        }
+      }
+      }} 
+    )();
+  } else {
+    var camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
+    camera.position.set( EYE_LENGTH, +EYE_WIDTH, 0 );
+    var cameragroup = new THREE.Object3D();
+    cameragroup.add( camera );
+    scene.add( cameragroup );
+    cameragroup.position.z = -Boxsize*VNUM + 1.7;
+    cameragroup.rotation.order = "ZXY";
+  
+    var renderer = new THREE.WebGLRenderer( {antialias:true} );
+    renderer.setSize( width, height );
+    renderer.shadowMapEnabled = true;
+    renderer.setClearColor(0xa0a0f0, 1.0);
+    document.body.appendChild( renderer.domElement );
+
+    ( function renderLoop () {
+      requestAnimationFrame( renderLoop );
+      renderer.render( scene, camera );
     
-  
-
-  var rendererR = new THREE.WebGLRenderer( {antialias:true} );
-  rendererR.setSize( width, height );
-  rendererR.shadowMapEnabled = true;
-  rendererR.setClearColor(0xa0a0f0, 1.0);
-  document.body.appendChild( rendererR.domElement );
-
-  var rendererL = new THREE.WebGLRenderer( {antialias:true} );
-  rendererL.setSize( width, height );
-  rendererL.shadowMap.enabled = true;
-  document.body.appendChild( rendererL.domElement );
-  rendererL.setClearColor(0xa0a0f0, 1.0);
+      if (moveFlg) {
+        var v = new THREE.Vector3(0,0,-0.1);
+        cameragroup.quaternion.multiplyVector3(v);
+        
+        cameragroup.position.x += v.x;
+        cameragroup.position.y += v.y;
+        cameragroup.position.z += v.z;
+        if( cameragroup.position.z < -Boxsize*VNUM + 1.7) {
+          cameragroup.position.z = -Boxsize*VNUM + 1.7;
+        }
+      }
+      } 
+    )();
+  }
 
 
   //環境光
@@ -147,13 +205,9 @@ var materials = [
             var z = Math.round((Math.random())-0.40)*Boxsize*((Math.random()*Math.random()*HNUM+0.5));
 
             if ( z > 0 ) {
-                var mesh2 = new THREE.Mesh( geometry2, material2 ); 
-                mesh2.position.x = i*Boxsize;
-                mesh2.position.y = j*Boxsize;
-                mesh2.position.z = z - Boxsize*(VNUM + HNUM/2);
-                mesh2.castShadow = true;  
-                //scene.add(mesh2);
-                THREE.GeometryUtils.merge(geometry,mesh2);
+                var m = new THREE.Matrix4();
+                m.makeTranslation( i*Boxsize, j*Boxsize, z-Boxsize*(VNUM + HNUM/2) );
+                geometry.merge(geometry2, m, 0);
             }
       }
   }  
@@ -188,24 +242,16 @@ var materials = [
 
   window.addEventListener("touchstart", function(e) {
     e.preventDefault();
+    moveFlg = true;
     }, true
   );
 
   window.addEventListener("touchend", function(e) {
     e.preventDefault();
-f    }, true
+    moveFlg = false;
+    }, true
   ); //*/
 
-
-  ( function renderLoop () {
-    requestAnimationFrame( renderLoop );
-    rendererR.render( scene, cameraR );
-    rendererL.render( scene, cameraL );
-    cameragroup.position.x = Math.sin(t/18000*Math.PI) * Boxsize*NUM/2;
-    cameragroup.position.y = Math.cos(t/18000*Math.PI) * Boxsize*NUM/2;
-    t = t+1;    
-    } 
-  )();
 }
 
 window.onload = function() {
