@@ -256,13 +256,13 @@ var materials = [
   document.addEventListener("keydown", function(e) {
     e.preventDefault();
     moveFlg = true;
-    }
+    }, true
   );
 
   document.addEventListener("keyup", function(e) {
     e.preventDefault();
     moveFlg = false;
-    }
+    }, true
   ); //*/
 
 }
