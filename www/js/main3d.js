@@ -252,13 +252,14 @@ var materials = [
     }, true
   ); //*/
 
-  window.addEventListener("keydown", function(e) {
+
+  document.addEventListener("keydown", function(e) {
     e.preventDefault();
     moveFlg = true;
     }
   );
 
-  window.addEventListener("keyup", function(e) {
+  document.addEventListener("keyup", function(e) {
     e.preventDefault();
     moveFlg = false;
     }
